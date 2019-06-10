@@ -1,0 +1,70 @@
+Ordered merges
+ - ordered merges based on columns
+   - like date-time column
+ - e.g. software and hardware sales
+  -  parse_dates = [date], sort_values(date)
+  - attempting use merge() will result in empty data, as by default it is inner join
+ 
+ by using merge_ordered() function, default it is outer join
+ -  behaves like merge when columns can be ordered
+ pd.merge_ordered(software, hardware, on=['Date', 'Company'], suffixes=['_hardware','_software'])
+ 
+ ordered merge with ffill (forward fill)
+ pd.merge_ordered(stocks, gdp, on='Date', fill_method='ffill')
+ 
+ Using merge_ordered()
+This exercise uses pre-loaded DataFrames austin and houston that contain weather data from the cities Austin and Houston respectively. They have been printed in the IPython Shell for you to examine.
+
+Weather conditions were recorded on separate days and you need to merge these two DataFrames together such that the dates are ordered. To do this, you'll use pd.merge_ordered(). After you're done, note the order of the rows before and after merging.
+
+Perform an ordered merge on austin and houston using pd.merge_ordered(). Store the result as tx_weather.
+Print tx_weather. You should notice that the rows are sorted by the date but it is not possible to tell which observation came from which city.
+Perform another ordered merge on austin and houston.
+This time, specify the keyword arguments on='date' and suffixes=['_aus','_hus'] so that the rows can be distinguished. Store the result as tx_weather_suff.
+Print tx_weather_suff to examine its contents. This has been done for you.
+Perform a third ordered merge on austin and houston.
+This time, in addition to the on and suffixes parameters, specify the keyword argument fill_method='ffill' to use forward-filling to replace NaN entries with the most recent non-null entry, and hit 'Submit Answer' to examine the contents of the merged DataFrames!
+
+# Perform the first ordered merge: tx_weather
+tx_weather = pd.merge_ordered(austin, houston)
+
+# Print tx_weather
+print(tx_weather)
+
+# Perform the second ordered merge: tx_weather_suff
+tx_weather_suff = pd.merge_ordered(austin, houston, on='date', suffixes=['_aus','_hus'])
+
+# Print tx_weather_suff
+print(tx_weather_suff)
+
+# Perform the third ordered merge: tx_weather_ffill
+tx_weather_ffill = pd.merge_ordered(austin, houston, on='date', suffixes=['_aus','_hus'], fill_method='ffill')
+
+# Print tx_weather_ffill
+print(tx_weather_ffill)
+
+Using merge_asof()
+Similar to pd.merge_ordered(), the pd.merge_asof() function will also merge values in order using the on column, but for each row in the left DataFrame, only rows from the right DataFrame whose 'on' column values are less than the left value will be kept.
+
+This function can be used to align disparate datetime frequencies without having to first resample.
+
+Here, you'll merge monthly oil prices (US dollars) into a full automobile fuel efficiency dataset. The oil and automobile DataFrames have been pre-loaded as oil and auto. The first 5 rows of each have been printed in the IPython Shell for you to explore.
+
+These datasets will align such that the first price of the year will be broadcast into the rows of the automobiles DataFrame. This is considered correct since by the start of any given year, most automobiles for that year will have already been manufactured.
+
+You'll then inspect the merged DataFrame, resample by year and compute the mean 'Price' and 'mpg'. You should be able to see a trend in these two columns, that you can confirm by computing the Pearson correlation between resampled 'Price' and 'mpg'.
+
+# Merge auto and oil: merged
+merged = pd.merge_asof(auto, oil, left_on='yr', right_on='Date')
+
+# Print the tail of merged
+print(merged.tail())
+
+# Resample merged: yearly
+yearly = merged.resample('A', on='Date')[['mpg','Price']].mean()
+
+# Print yearly
+print(yearly)
+
+# print yearly.corr()
+print(yearly.corr())
