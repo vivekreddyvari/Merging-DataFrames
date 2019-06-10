@@ -1,0 +1,98 @@
+Appending and concatenating Dataframes
+ - Loading Population data
+  - loaded with pop1 and pop2 csv files
+  -  when appended using .append()
+  -  e.g. pop1.append(pop2)
+  -  the data is stacked row wise pop1 after pop2 
+
+- population with unemployment data:
+ - when appending with different data frames?
+ - unemployment df has 3 columns, first column similar to population df
+ - when you append population with unemployment, you will see NaN values when ever the columns are not matching
+- Repeated index labels
+ - population.append(unemployment)
+- concatenating rows
+ - pd.concat([population, unemployment], axis=0), axis=0 means stacking rows "Vertically" at the bottom
+ - Alter-Join : pd.concat([population, unemployment], axis=1), axis=0 means stacking rows "horizontally" at the right
+ - this means axis=1 help the two dataframes to merged with respect to common column
+
+Exercises:
+Appending DataFrames with ignore_index
+In this exercise, you'll use the Baby Names Dataset (from data.gov) again. This time, both DataFrames names_1981 and names_1881 are loaded without specifying an Index column (so the default Indexes for both are RangeIndexes).
+
+You'll use the DataFrame .append() method to make a DataFrame combined_names. To distinguish rows from the original two DataFrames, you'll add a 'year' column to each with the year (1881 or 1981 in this case). In addition, you'll specify ignore_index=True so that the index values are not used along the concatenation axis. The resulting axis will instead be labeled 0, 1, ..., n-1, which is useful if you are concatenating objects where the concatenation axis does not have meaningful indexing information.
+
+Create a 'year' column in the DataFrames names_1881 and names_1981, with values of 1881 and 1981 respectively. Recall that assigning a scalar value to a DataFrame column broadcasts that value throughout.
+
+Create a new DataFrame called combined_names by appending the rows of names_1981 underneath the rows of names_1881. Specify the keyword argument ignore_index=True to make a new RangeIndex of unique integers for each row.
+
+Print the shapes of all three DataFrames. This has been done for you.
+
+Extract all rows from combined_names that have the name 'Morgan'. To do this, use the .loc[] accessor with an appropriate filter. The relevant column of combined_names here is 'name'.
+# Add 'year' column to names_1881 and names_1981
+names_1881['year'] = 1881
+names_1981['year'] = 1981
+
+# Append names_1981 after names_1881 with ignore_index=True: combined_names
+combined_names = names_1881.append(names_1981, ignore_index=True)
+
+# Print shapes of names_1981, names_1881, and combined_names
+print(names_1981.shape)
+print(names_1881.shape)
+print(combined_names.shape)
+
+# Print all rows that contain the name 'Morgan'
+print(combined_names.loc[combined_names['name']=='Morgan'])
+
+Concatenating pandas DataFrames along column axis
+The function pd.concat() can concatenate DataFrames horizontally as well as vertically (vertical is the default). To make the DataFrames stack horizontally, you have to specify the keyword argument axis=1 or axis='columns'.
+
+In this exercise, you'll use weather data with maximum and mean daily temperatures sampled at different rates (quarterly versus monthly). You'll concatenate the rows of both and see that, where rows are missing in the coarser DataFrame, null values are inserted in the concatenated DataFrame. This corresponds to an outer join (which you will explore in more detail in later exercises).
+
+The files 'quarterly_max_temp.csv' and 'monthly_mean_temp.csv' have been pre-loaded into the DataFrames weather_max and weather_mean respectively, and pandas has been imported as pd.
+Create weather_list, a list of the DataFrames weather_max and weather_mean.
+Create a new DataFrame called weather by concatenating weather_list horizontally.
+Pass the list to pd.concat() and specify the keyword argument axis=1 to stack them horizontally.
+Print the new DataFrame weather.
+# Create a list of weather_max and weather_mean
+weather_list = [weather_max, weather_mean]
+
+# Concatenate weather_list horizontally
+weather = pd.concat(weather_list, axis=1)
+
+# Print weather
+print(weather)
+
+Reading multiple files to build a DataFrame
+It is often convenient to build a large DataFrame by parsing many files as DataFrames and concatenating them all at once. You'll do this here with three files, but, in principle, this approach can be used to combine data from dozens or hundreds of files.
+
+Here, you'll work with DataFrames compiled from The Guardian's Olympic medal dataset.
+
+pandas has been imported as pd and two lists have been pre-loaded: An empty list called medals, and medal_types, which contains the strings 'bronze', 'silver', and 'gold'
+
+Iterate over medal_types in the for loop.
+Inside the for loop:
+Create file_name using string interpolation with the loop variable medal. This has been done for you. The expression "%s_top5.csv" % medal evaluates as a string with the value of medal replacing %s in the format string.
+Create the list of column names called columns. This has been done for you.
+Read file_name into a DataFrame called medal_df. Specify the keyword arguments header=0, index_col='Country', and names=columns to get the correct row and column Indexes.
+Append medal_df to medals using the list .append() method.
+Concatenate the list of DataFrames medals horizontally (using axis='columns') to create a single DataFrame called medals. Print it in its entirety.
+for medal in medal_types:
+
+    # Create the file name: file_name
+    file_name = "%s_top5.csv" % medal
+    
+    # Create list of column names: columns
+    columns = ['Country', medal]
+    
+    # Read file_name into a DataFrame: df
+    medal_df = pd.read_csv(file_name, index_col='Country', header=0, names=columns)
+
+    # Append medal_df to medals
+    medals.append(medal_df)
+
+# Concatenate medals horizontally: medals
+medals = pd.concat(medals, axis='columns')
+
+# Print medals
+print(medals)
