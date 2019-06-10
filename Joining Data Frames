@@ -1,0 +1,88 @@
+function merge() merges by default with inner-merge
+
+merge with left join
+ - keeps all rows of left Dataframe in the merged Dataframe
+ - for the rows in the left_dataframe, with matches in the right_dataframe
+  - Non-Joining Columns of the right_dataframe are appended to left_datframe
+ - for the rows in the left_dataframe, with NO matches in the right DataFrame
+  - Non-Joining Columns are filled with null values
+ - 
+ join with left
+ pd.merge(bronze, gold, on = ['NOC', 'Country'], suffixes = ['_bronze', '_gold'], how = 'left')
+ 
+ join with right
+ pd.merge(bronze, gold, on = ['NOC', 'Country'], suffixes = ['_bronze', '_gold'], how = 'right') 
+ 
+ outer join
+ rows that doesn't match can be found with outer join
+ pd.merge(bronze, gold, on = ['NOC', 'Country'], suffixes = ['_bronze', '_gold'], how = 'outer')
+ 
+ Using .join(how='left')
+ population.join(unemployment)
+ joins all the columsn
+ some missing columns will be filled with NaN
+ 
+ Using .join(how='right')
+ population.join(unemployment, how='right')
+ all matching, do also a missing as NaN of right join's DataFrame
+ 
+ Using.join (how='inner')
+ population.join(unemployment, how='inner')   
+ only matching
+ 
+ Using.join (how='outer')
+ population.join(unemployment, how='outer')
+ all the rows 
+ 
+ Which one to use for Joining?
+ a) df1.append(df2): stacking vertically
+ b) pd.concat(df1,df2)
+ 	-  stacking vertically and horizontally with axis = 0 or 1
+ 	-  simple left, right, 
+ 1) pd.merge() with columns to join, suffixes and how (nice to use)
+ 2) df3.join(df3, with how = left,right,inner, outer) (only on left and outer)
+ 
+ 
+ Exercise
+Exercise
+Joining by Index
+The DataFrames revenue and managers are displayed in the IPython Shell. Here, they are indexed by 'branch_id'.
+
+Choose the function call below that will join the DataFrames on their indexes and return 5 rows with index labels [10, 20, 30, 31, 47]. Explore each of them in the IPython Shell to get a better understanding of their functionality.
+ans: revenue.join(managers, lsuffix='_rev', rsuffix='_mng', how='outer')
+
+Choosing a joining strategy
+Suppose you have two DataFrames: students (with columns 'StudentID', 'LastName', 'FirstName', and 'Major') and midterm_results (with columns 'StudentID', 'Q1', 'Q2', and 'Q3' for their scores on midterm questions).
+
+You want to combine the DataFrames into a single DataFrame grades, and be able to easily spot which students wrote the midterm and which didn't (their midterm question scores 'Q1', 'Q2', & 'Q3' should be filled with NaN values).
+
+You also want to drop rows from midterm_results in which the StudentID is not found in students.
+
+Which of the following strategies gives the desired result?
+A left join: grades = pd.merge(students, midterm_results, how='left')
+
+Merging DataFrames with outer join
+This exercise picks up where the previous one left off. The DataFrames revenue, managers, and sales are pre-loaded into your namespace (and, of course, pandas is imported as pd). Moreover, the merged DataFrames revenue_and_sales and sales_and_managers have been pre-computed exactly as you did in the previous exercise.
+
+The merged DataFrames contain enough information to construct a DataFrame with 5 rows with all known information correctly aligned and each branch listed only once. You will try to merge the merged DataFrames on all matching keys (which computes an inner join by default). You can compare the result to an outer join and also to an outer join with restricted subset of columns as keys.
+
+# Perform the first merge: merge_default
+merge_default = pd.merge(sales_and_managers, revenue_and_sales)
+
+# Print merge_default
+print(merge_default)
+
+# Perform the second merge: merge_outer
+merge_outer = pd.merge(sales_and_managers, revenue_and_sales, how='outer')
+
+# Print merge_outer
+print(merge_outer)
+
+# Perform the third merge: merge_outer_on
+merge_outer_on = pd.merge(sales_and_managers, revenue_and_sales, on=['city','state'])
+
+# Print merge_outer_on
+print(merge_outer_on)
+
+
+
