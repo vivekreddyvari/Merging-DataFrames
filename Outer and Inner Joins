@@ -1,0 +1,73 @@
+Outer and Inner joins:
+ - Using arrays
+ - Stacking 2-D arrays
+ - using numpy - 
+ a = np.arrange(8).reshape(2,4) + 0,1 
+ b = np.arrange(6).reshape(2,3) + 0.3
+ 
+ np.hstack([b, a]) = np.concatenate([b, a], axis=1)
+ 
+ np.vstack([c, a]) = np.concatenate([c, a], axis=0)
+ 
+Population and Unemployment data
+- p = pd.read_csv(population_00.csv, index_col=0)
+- u = pd.read_csv(unemployment_00.csv, index_col=0)
+
+print(p)
+print(u)
+
+
+Joins  =  meaningful igluing indexes
+
+Outerjoin : union of index set (all labels, no repetition)
+			missing fields filled as NaN
+Innerjoin : Inner Join
+			Intersection of index sets (only common labels)
+				
+Join & Concatenate
+
+pd.concat([p, u], axis=1, join='inner')
+only rows present in both indexs
+pd.concat([p, u], axis=1, join='outer')
+all rows present in both indexs with missing fields as NaN is returned
+
+
+pd.concat([p, u], axis=0, join='outer')
+no values return
+
+
+Concatenating DataFrames with inner join
+Here, you'll continue working with DataFrames compiled from The Guardian's Olympic medal dataset.
+
+The DataFrames bronze, silver, and gold have been pre-loaded for you.
+
+Your task is to compute an inner join.
+
+# Create the list of DataFrames: medal_list
+medal_list = [bronze, silver, gold]
+
+# Concatenate medal_list horizontally using an inner join: medals
+medals = pd.concat(medal_list, keys=['bronze', 'silver', 'gold'], axis=1, join='inner')
+
+# Print medals
+print(medals)
+
+Resampling & concatenating DataFrames with inner join
+In this exercise, you'll compare the historical 10-year GDP (Gross Domestic Product) growth in the US and in China. The data for the US starts in 1947 and is recorded quarterly; by contrast, the data for China starts in 1961 and is recorded annually.
+
+You'll need to use a combination of resampling and an inner join to align the index labels. You'll need an appropriate offset alias for resampling, and the method .resample() must be chained with some kind of aggregation method (.pct_change() and .last() in this case).
+
+pandas has been imported as pd, and the DataFrames china and us have been pre-loaded, with the output of china.head() and us.head() printed in the IPython Shell.
+
+# Resample and tidy china: china_annual
+china_annual = china.resample('A').last().pct_change(10).dropna()
+
+# Resample and tidy us: us_annual
+us_annual = us.resample('A').last().pct_change(10).dropna()
+
+# Concatenate china_annual and us_annual: gdp
+gdp = pd.concat([china_annual, us_annual], axis=1, join='inner')
+
+# Resample gdp and print
+print(gdp.resample('10A').last())
+
